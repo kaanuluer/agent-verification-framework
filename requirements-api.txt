@@ -14,3 +14,7 @@ gevent>=23.9.1
 
 # For production deployment
 python-dotenv>=1.0.0
+
+# Security tools (development)
+bandit>=1.7.5
+safety>=2.3.5

@@ -23,6 +23,8 @@ from src.core import (
 )
 from .auth import AuthManager, require_auth
 from .middleware import setup_middleware
+from .config import SecurityConfig, ValidationConfig
+from .validators import validate_intent_request, validate_action_request
 from .models import (
     IntentRequest,
     ActionRequest,
@@ -40,15 +42,29 @@ def create_app(config: Optional[Dict[str, Any]] = None) -> Flask:
     
     app = Flask(__name__)
     
-    # Configuration
+    # Security Configuration
     app.config['JSON_SORT_KEYS'] = False
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+    app.config['SECRET_KEY'] = SecurityConfig.get_secret_key()
+    app.config['MAX_CONTENT_LENGTH'] = SecurityConfig.get_max_content_length()
+    
+    # Security headers
+    app.config['SESSION_COOKIE_SECURE'] = SecurityConfig.require_https()
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     
     if config:
         app.config.update(config)
     
-    # Enable CORS
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Enable CORS with proper origins
+    cors_origins = SecurityConfig.get_cors_origins()
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": cors_origins,
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization", "X-API-Key"],
+            "max_age": 3600
+        }
+    })
     
     # Setup middleware
     setup_middleware(app)
@@ -227,6 +243,14 @@ def verify_intent():
     if not data:
         return jsonify({'error': 'Request body is required'}), 400
     
+    # Validate input
+    validation_errors = validate_intent_request(data)
+    if validation_errors:
+        return jsonify({
+            'error': 'Validation failed',
+            'details': validation_errors
+        }), 400
+    
     # Get or create session
     session_id = data.get('session_id')
     level = data.get('level', 'STANDARD')
@@ -280,6 +304,14 @@ def verify_action():
     
     if not data:
         return jsonify({'error': 'Request body is required'}), 400
+    
+    # Validate input
+    validation_errors = validate_action_request(data)
+    if validation_errors:
+        return jsonify({
+            'error': 'Validation failed',
+            'details': validation_errors
+        }), 400
     
     session_id = data.get('session_id')
     
@@ -470,19 +502,36 @@ if __name__ == '__main__':
     import argparse
     
     parser = argparse.ArgumentParser(description='Agent Verification Framework API Server')
-    parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
-    parser.add_argument('--port', type=int, default=5000, help='Port to bind to')
-    parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+    parser.add_argument('--host', default=None, help='Host to bind to (default: from env or 127.0.0.1)')
+    parser.add_argument('--port', type=int, default=None, help='Port to bind to (default: from env or 5000)')
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode (development only)')
     
     args = parser.parse_args()
+    
+    # Get configuration from environment or args
+    host = args.host or SecurityConfig.get_host()
+    port = args.port or SecurityConfig.get_port()
+    debug = args.debug or SecurityConfig.is_debug()
+    
+    # Security warning for 0.0.0.0 binding
+    if host == '0.0.0.0':
+        print("⚠️  WARNING: Binding to 0.0.0.0 (all interfaces)")
+        print("   This should only be used in development or behind a firewall")
+        print("   Set HOST=127.0.0.1 environment variable for localhost only\n")
+    
+    # Security warning for debug mode
+    if debug:
+        print("⚠️  WARNING: Debug mode is enabled")
+        print("   This should NEVER be used in production\n")
     
     print(f"""
     ╔══════════════════════════════════════════════════════════╗
     ║  Agent Verification Framework API Server                 ║
     ║  Version: 0.2.0                                          ║
-    ║  Host: {args.host:48s} ║
-    ║  Port: {args.port:48d} ║
+    ║  Host: {host:48s} ║
+    ║  Port: {port:48d} ║
+    ║  Debug: {str(debug):46s} ║
     ╚══════════════════════════════════════════════════════════╝
     """)
     
-    app.run(host=args.host, port=args.port, debug=args.debug)
+    app.run(host=host, port=port, debug=debug)

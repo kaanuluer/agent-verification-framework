@@ -73,3 +73,13 @@ audit_logs/
 reports/
 exports/
 *.json.bak
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Security
+*.key
+*.pem
+*.crt
