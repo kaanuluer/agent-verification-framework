@@ -1,0 +1,23 @@
+# Agent Verification Framework - Python Dependencies
+
+# Core dependencies
+python-dateutil>=2.8.2
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+
+# Type checking
+mypy>=1.5.0
+
+# Code quality
+black>=23.7.0
+flake8>=6.1.0
+pylint>=2.17.0
+
+# Optional: For advanced features
+# numpy>=1.24.0  # For ML-based anomaly detection
+# pandas>=2.0.0  # For data analysis
+# redis>=4.6.0   # For distributed verification
+# flask>=2.3.0   # For web dashboard

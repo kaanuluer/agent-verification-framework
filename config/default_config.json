@@ -1,0 +1,85 @@
+{
+  "framework": {
+    "version": "0.1.0",
+    "default_verification_level": "STANDARD"
+  },
+  "logging": {
+    "log_retention_days": 90,
+    "log_export_path": "/var/log/agent-verification",
+    "log_format": "json",
+    "enable_console_logging": true,
+    "log_level": "INFO"
+  },
+  "security": {
+    "require_approval_for_critical": true,
+    "allow_delete": false,
+    "blacklist": [
+      "/etc/passwd",
+      "/etc/shadow",
+      "/system",
+      "/root",
+      "/usr/bin/sudo"
+    ],
+    "whitelist": [],
+    "unsafe_domains": [
+      "malicious.com",
+      "phishing.net"
+    ],
+    "enable_whitelist": false
+  },
+  "validation": {
+    "strict_validation": false,
+    "validate_expected_outcome": true,
+    "require_intent_description": true,
+    "minimum_description_length": 10
+  },
+  "behavior": {
+    "anomaly_threshold": 0.7,
+    "rate_limit_window_seconds": 60,
+    "max_actions_per_window": 100,
+    "error_rate_threshold": 0.2,
+    "enable_pattern_learning": false
+  },
+  "alerts": {
+    "enable_real_time_alerts": true,
+    "alert_channels": [
+      "log"
+    ],
+    "alert_on_verification_failure": true,
+    "alert_on_security_violation": true,
+    "alert_on_anomaly": true,
+    "alert_critical_only": false
+  },
+  "performance": {
+    "max_history_size": 1000,
+    "enable_caching": true,
+    "cache_ttl_seconds": 300,
+    "async_verification": false,
+    "batch_processing": false
+  },
+  "reporting": {
+    "generate_daily_reports": true,
+    "report_export_path": "/var/reports/agent-verification",
+    "include_metrics": true,
+    "include_recommendations": true
+  },
+  "risk_rules": {
+    "READ": "SAFE",
+    "WRITE": "MEDIUM",
+    "DELETE": "HIGH",
+    "EXECUTE": "HIGH",
+    "NETWORK": "MEDIUM",
+    "SYSTEM": "CRITICAL",
+    "USER_INTERACTION": "LOW"
+  },
+  "compliance": {
+    "enable_audit_trail": true,
+    "cryptographic_verification": true,
+    "retention_policy_days": 365,
+    "compliance_standards": [
+      "SOC2",
+      "GDPR",
+      "HIPAA"
+    ]
+  }
+}
