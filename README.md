@@ -1,256 +1,107 @@
-# Agent Verification Framework
+# KATA: Agent Trust & Intent Verification
 
-A comprehensive framework designed to verify and validate agent actions and their underlying intents.
+An open concept for continuously verifying **AI agents, delegated authority, intent, behavior, and actions**.
 
-## 🎯 Purpose
+> **KATA — Know And Trust Agents**
 
-This framework enables autonomous agents to:
-- **Record and monitor** actions taken
-- **Analyze and validate** intents
-- **Detect behavioral patterns**
-- **Perform security and compliance** checks
-- **Generate audit trails**
+## Why KATA?
 
-## 🏗️ Architecture
+AI agents are moving from generating information to taking actions on behalf of people and organizations.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Agent Verification Layer                 │
-├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Intent     │  │   Action     │  │  Behavior    │      │
-│  │  Validator   │  │   Tracker    │  │   Analyzer   │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│                                                               │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │  Security    │  │   Audit      │  │   Report     │      │
-│  │   Guards     │  │    Logger    │  │  Generator   │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│                                                               │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │  Agent Execution │
-                    └──────────────────┘
-```
+Traditional fraud models often ask:
 
-## 🔑 Key Components
+> Is this transaction risky?
 
-### 1. Intent Validator
-- Analyzes what the agent intends to do
-- Predicts expected outcomes
-- Assesses risk levels
+KATA proposes a broader question:
 
-### 2. Action Tracker
-- Records all agent actions
-- Tracks action chains
-- Monitors side effects
+> **Is this agent trusted, was it authorized, does the action match the granted intent, and is the agent behaving consistently with that intent?**
 
-### 3. Behavior Analyzer
-- Pattern recognition
-- Anomaly detection
-- Intent-action alignment validation
+This repository explores that model as an open design.
 
-### 4. Security Guards
-- Unauthorized access control
-- Critical operation validation
-- Rate limiting and throttling
-
-### 5. Audit Logger
-- Immutable log records
-- Cryptographic verification
-- Retention policy management
-
-### 6. Report Generator
-- Performance metrics
-- Verification reports
-- Compliance documentation
-
-## 📊 Verification Levels
-
-### Level 0: No Verification (Unsafe)
-- No validation performed
-- For non-production test environments only
-
-### Level 1: Basic Tracking
-- Action logging
-- Simple intent recording
-- Minimal overhead
-
-### Level 2: Standard Verification (Recommended)
-- Intent validation
-- Security checks
-- Behavior analysis
-- Moderate overhead
-
-### Level 3: Comprehensive Verification
-- All controls active
-- Real-time anomaly detection
-- Multi-layer validation
-- For high-security systems
-
-### Level 4: Paranoid Mode
-- Zero-trust verification
-- Human-in-the-loop approval
-- Complete audit trail
-- Maximum overhead
-
-## 🚀 Quick Start
-
-```python
-from agent_verification import VerificationFramework, VerificationLevel
-
-# Initialize the framework
-verifier = VerificationFramework(
-    level=VerificationLevel.STANDARD,
-    config={
-        'log_retention_days': 90,
-        'enable_real_time_alerts': True,
-        'approval_required_for_critical': True
-    }
-)
-
-# Wrap your agent
-verified_agent = verifier.wrap(your_agent)
-
-# Use it
-result = verified_agent.execute(task)
-```
-
-## 📁 Directory Structure
+## Core Model
 
 ```
-agent-verification-framework/
-├── README.md                          # This file
-├── docs/                              # Detailed documentation
-│   ├── architecture.md
-│   ├── api-reference.md
-│   └── examples.md
-├── src/                               # Framework source code
-│   ├── core/                          # Core verification logic
-│   ├── validators/                    # Intent validators
-│   ├── trackers/                      # Action trackers
-│   ├── analyzers/                     # Behavior analyzers
-│   ├── guards/                        # Security guards
-│   ├── reporters/                     # Report generators
-│   └── api/                          # REST API server
-├── tests/                             # Test suite
-├── examples/                          # Usage examples
-└── config/                            # Configuration templates
+Principal
+   ↓
+Delegation
+   ↓
+Agent Identity
+   ↓
+Intent
+   ↓
+Behavior
+   ↓
+Action
+   ↓
+Transaction
+   ↓
+KATA Decision
 ```
 
-## 🔍 Use Cases
+KATA evaluates five connected layers:
 
-1. **Production Agent Monitoring**: Monitor agent behavior in live systems
-2. **Development & Testing**: Debug agents during development
-3. **Compliance**: Meet regulatory requirements
-4. **Security Audits**: Gather evidence for security reviews
-5. **Performance Optimization**: Identify bottlenecks
+1. **Agent Identity** — Who is the agent?
+2. **Delegation** — Who authorized it?
+3. **Intent** — What was it authorized to do?
+4. **Behavior** — Is it behaving consistently with that authorization?
+5. **Action / Transaction** — What is it actually trying to execute?
 
-## 📈 Metrics and KPIs
+The resulting decision may be:
 
-- Intent-Action Alignment Score
-- Security Violation Rate
-- Average Verification Overhead
-- False Positive Rate
-- Audit Coverage Percentage
+**ALLOW · MONITOR · STEP-UP · HUMAN APPROVAL · BLOCK · REVOKE**
 
-## 🔐 Security
+## Read the Concept
 
-The framework follows these security principles:
-- **Zero Trust Architecture**
-- **Principle of Least Privilege**
-- **Defense in Depth**
-- **Fail Secure**
+See the full proposal:
 
-## 🌐 REST API
+**[KATA Concept and Architecture](docs/KATA.md)**
 
-The framework includes a REST API server for multi-user access:
+The document covers:
 
-```bash
-# Start the API server
-python -m src.api.server
+- Agent identity and trust
+- Delegation intelligence
+- Machine-readable intent
+- Agent behavioral intelligence
+- Risk graphs
+- Continuous verification
+- Explainable decisions
+- API concepts
+- Existing standards and interoperability
+- Threat and governance questions
+- Proposed roadmap
 
-# Or with configuration
-python -m src.api.server --config config/api_config.json
-```
+## The Key Idea
 
-### API Endpoints
+An authenticated agent is not automatically an authorized agent.
 
-- `POST /api/v1/verify/intent` - Verify an intent
-- `POST /api/v1/verify/action` - Verify an action
-- `GET /api/v1/reports/{session_id}` - Get verification report
-- `GET /api/v1/health` - Health check
+An authorized agent is not automatically authorized for every action.
 
-See [API Documentation](docs/api-reference.md) for details.
+And a valid authorization does not guarantee that the agent is behaving as intended.
 
-## 📦 Installation
+KATA therefore treats **identity + delegation + intent + behavior + action** as a connected trust graph rather than isolated fraud signals.
 
-```bash
-# Clone the repository
-git clone https://github.com/kaanuluer/agent-verification-framework.git
-cd agent-verification-framework
+## Status
 
-# Install dependencies
-pip install -r requirements.txt
+**Concept / Open Design**
 
-# For API server
-pip install -r requirements-api.txt
+This repository is intentionally positioned as an open framework for discussion, threat modeling, schemas, prototypes, and interoperability work.
 
-# Install the package
-pip install -e .
-```
+## Contributing
 
-## 🧪 Running Tests
+Ideas, critiques, threat models, schemas, examples and reference implementations are welcome.
 
-```bash
-# Run all tests
-pytest tests/ -v
+Open an issue to discuss a proposal before implementing a major architectural change.
 
-# With coverage
-pytest tests/ --cov=src --cov-report=html
-```
+## Author
 
-## 📚 Documentation
+**Kaan Uluer, CFE, MBA**
 
-- [Architecture Guide](docs/architecture.md)
-- [API Reference](docs/api-reference.md)
-- [Quick Start Guide](docs/quickstart.md)
-- [Examples](examples/)
+Fraud, Payment Systems & Product Management
 
-## 🤝 Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-## 📝 License
-
-MIT License - See [LICENSE](LICENSE) for details.
-
-## 🔗 Links
-
-- **Repository**: https://github.com/kaanuluer/agent-verification-framework
-- **Issues**: https://github.com/kaanuluer/agent-verification-framework/issues
-- **Releases**: https://github.com/kaanuluer/agent-verification-framework/releases
-
-## ⭐ Features
-
-- ✅ 5 Verification levels (NONE to PARANOID)
-- ✅ Intent validation with risk assessment
-- ✅ Action tracking with chain management
-- ✅ Behavior analysis with anomaly detection
-- ✅ Security controls (blacklist/whitelist)
-- ✅ Audit logging with cryptographic integrity
-- ✅ REST API for multi-user access
-- ✅ 31+ comprehensive unit tests
-- ✅ Complete documentation
-- ✅ Working examples
+GitHub: https://github.com/kaanuluer
 
 ---
 
-**Status**: ✅ Production Ready
+### Disclaimer
 
-**Version**: 0.2.0
-
-**Last Updated**: September 27, 2026
+KATA is an independent open concept and is not affiliated with or endorsed by Google, Visa, Mastercard, W3C, or any other organization referenced in the proposal.
